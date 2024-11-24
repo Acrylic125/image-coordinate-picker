@@ -1,0 +1,96 @@
+---
+import "@/styles/globals.css";
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+---
+
+<Layout title="Sheet">
+  <main class="w-full p-20 flex flex-col gap-4">
+    <div class="w-full flex flex-col gap-2">
+      <h1 class="text-4xl font-bold">Image Coordinate Picker</h1>
+      <p class="text-gray-700">
+        Upload an image then click on where you want to retrieve the
+        coordinates,
+      </p>
+    </div>
+    <input type="file" id="imageInput" accept="image/*" />
+    <div id="imageContainer">
+      <img class="w-full" id="uploadedImage" style="display: none" />
+      <div
+        class="tooltip absolute rounded-md bg-gray-950 text-white text-lg p-4"
+        style="display: none;"
+      >
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const imageInput = document.getElementById("imageInput")!;
+  const uploadedImage = document.getElementById("uploadedImage")!;
+  const imageContainer = document.getElementById("imageContainer")!;
+  const tooltip = document.querySelector(".tooltip")!;
+
+  let originalWidth = 0;
+  let originalHeight = 0;
+
+  imageInput.addEventListener("change", function (e) {
+    if (!(e.target instanceof HTMLInputElement)) return;
+    const file = e.target.files![0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        if (!(uploadedImage instanceof HTMLImageElement)) return;
+        if (e.target === null) return;
+        if (typeof e.target.result !== "string") return;
+
+        uploadedImage.src = e.target.result;
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = function (e) {
+          originalWidth = img.naturalWidth;
+          originalHeight = img.naturalHeight;
+          console.log(originalWidth, originalHeight);
+        };
+
+        uploadedImage.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  uploadedImage.addEventListener("click", function (e) {
+    const rect = uploadedImage.getBoundingClientRect();
+    const _x = Math.round(e.clientX - rect.left);
+    const _y = Math.round(e.clientY - rect.top);
+
+    const x = Math.round((_x / rect.width) * originalWidth);
+    const y = Math.round((_y / rect.height) * originalHeight);
+
+    const coords = `${x},${y}`;
+    navigator.clipboard.writeText(coords);
+  });
+
+  imageContainer.addEventListener("mousemove", function (e) {
+    if (uploadedImage.style.display === "none") return;
+
+    const rect = uploadedImage.getBoundingClientRect();
+    const _x = Math.round(e.clientX - rect.left);
+    const _y = Math.round(e.clientY - rect.top);
+
+    const x = Math.round((_x / rect.width) * originalWidth);
+    const y = Math.round((_y / rect.height) * originalHeight);
+
+    if (!(tooltip instanceof HTMLElement)) return;
+    tooltip.style.display = "block";
+    tooltip.style.left = e.clientX - rect.left + "px";
+    tooltip.style.top = e.clientY - rect.top + "px";
+    tooltip.textContent = `${x},${y}`;
+  });
+
+  imageContainer.addEventListener("mouseout", function () {
+    if (!(tooltip instanceof HTMLElement)) return;
+    tooltip.style.display = "none";
+  });
+</script>

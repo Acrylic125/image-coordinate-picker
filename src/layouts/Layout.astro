@@ -1,0 +1,71 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="application-name" content="Benedict Tan" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="5c9b2a54-25c3-4c10-9b7b-4ebbf2678e12"></script>
+    <meta name="description" content="Benedict Tan's Portfolio" />
+    <meta name="keywords" content="Benedict Tan, Portfolio" />
+    <meta name="author" content="Acrylic125" />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:site_name" content="Benedict Tan" />
+    <meta property="og:description" content="Benedict Tan's Portfolio" />
+    <meta property="og:image" content="https://benapps.dev/ben.png" />
+    <meta property="og:url" content="https://benapps.dev" />
+    <meta property="og:type" content="product" />
+    <meta property="og:locale" content="en_GB" />
+
+    <meta name="twitter:card" content="Weyes" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:creator" content="@_Acrylic125" />
+    <meta name="twitter:description" content="Benedict Tan's Portfolio" />
+    <meta name="twitter:image" content="https://benapps.dev/ben.png" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Weyes" />
+
+    <meta name="robots" content="index, follow" />
+
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+<style is:global>
+  ::-webkit-scrollbar {
+    /* background-color: black; */
+    /* @apply bg-transparent w-3; */
+    @apply w-0 bg-transparent;
+  }
+
+  ::-webkit-scrollbar-track {
+    /* background-color: black; */
+    /* @apply bg-transparent w-3; */
+    @apply w-0 bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    /* background-color: black; */
+    /* @apply bg-gray-800/25 border absolute w-3; */
+    @apply w-0 bg-transparent;
+  }
+</style>

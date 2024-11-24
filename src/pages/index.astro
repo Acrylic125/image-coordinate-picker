@@ -1,7 +1,6 @@
 ---
 import "@/styles/globals.css";
 import Layout from "../layouts/Layout.astro";
-import { Image } from "astro:assets";
 ---
 
 <Layout title="Sheet">
@@ -10,14 +9,14 @@ import { Image } from "astro:assets";
       <h1 class="text-4xl font-bold">Image Coordinate Picker</h1>
       <p class="text-gray-700">
         Upload an image then click on where you want to retrieve the
-        coordinates,
+        coordinates.
       </p>
     </div>
     <input type="file" id="imageInput" accept="image/*" />
-    <div id="imageContainer">
-      <img class="w-full" id="uploadedImage" style="display: none" />
+    <div id="imageContainer" class="">
+      <img id="uploadedImage" style="display: none" />
       <div
-        class="tooltip absolute rounded-md bg-gray-950 text-white text-lg p-4"
+        class="tooltip fixed rounded-md bg-gray-950 text-white text-lg p-4 z-10 pointer-events-none"
         style="display: none;"
       >
       </div>
@@ -61,6 +60,7 @@ import { Image } from "astro:assets";
   });
 
   uploadedImage.addEventListener("click", function (e) {
+    e.preventDefault();
     const rect = uploadedImage.getBoundingClientRect();
     const _x = Math.round(e.clientX - rect.left);
     const _y = Math.round(e.clientY - rect.top);
@@ -83,9 +83,15 @@ import { Image } from "astro:assets";
     const y = Math.round((_y / rect.height) * originalHeight);
 
     if (!(tooltip instanceof HTMLElement)) return;
+
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const midTTWidth = tooltipRect.width / 2;
+    const fullTTHeight = tooltipRect.height;
+
     tooltip.style.display = "block";
-    tooltip.style.left = e.clientX - rect.left + "px";
-    tooltip.style.top = e.clientY - rect.top + "px";
+    tooltip.style.left = e.clientX - midTTWidth + "px";
+    tooltip.style.top = e.clientY - fullTTHeight + "px";
+
     tooltip.textContent = `${x},${y}`;
   });
 
